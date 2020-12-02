@@ -1,0 +1,62 @@
+############## Numbers of length N and value less than K #################
+
+/*
+
+Given a set of digits (A) in sorted order, find how many numbers of length B are possible whose value is less than number C.
+
+*/
+
+Java Solution:
+
+public int solve(ArrayList<Integer> A, int B, int C) {
+        int n=A.size();
+        int result=0;
+        Set<Integer> set = new HashSet<>();
+        for(int i:A){
+            set.add(i);
+        }
+        A.clear();
+        A.addAll(set);
+        
+        ArrayList<Integer> list = new ArrayList<>();
+        while(C>0){
+            list.add(0,C%10);
+            C/=10;
+        }
+        if(list.size()<B){
+            return 0;
+        }
+        if(B<list.size()){
+            C = (int)Math.pow(10, B) - 1;
+            list.clear();
+            while(C > 0) {
+                list.add(0, C % 10);
+                C /= 10;
+            }
+            if (set.contains(list.get(list.size() - 1))) {
+                result = 1;
+            }
+        }
+        boolean isFirst = true;
+        int prevCnt = 0;
+        for (int digit : list) {
+            int cnt = 0;
+            if (isFirst && B > 1) {
+                for (int d : A) {
+                    cnt += (d > 0 && d < digit) ? 1 : 0;
+                }
+            }
+            else {
+                for (int d : A) {
+                    cnt += (d < digit) ? 1 : 0;
+                }
+            }
+        isFirst = false;
+        result += cnt * (int)Math.pow(n, --B);
+        if (!set.contains(digit)) 
+            break;
+        }
+        return result;
+    }
+    
+    
